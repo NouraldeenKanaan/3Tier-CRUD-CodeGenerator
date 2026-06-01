@@ -1,0 +1,5 @@
+<Solution>
+  <Project Path="../CRUD_OperationsGeneratorBusiness/CRUD_OperationsGeneratorBusiness.csproj" />
+  <Project Path="../CRUD_OperationsGeneratorData/CRUD_OperationsGeneratorData.csproj" />
+  <Project Path="CRUD_OperationsGenerator.csproj" />
+</Solution>
