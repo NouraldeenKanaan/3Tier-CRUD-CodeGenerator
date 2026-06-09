@@ -83,7 +83,7 @@ namespace {clsGlobal.DataBaseName}Data
 
             try
             {{
-                using (SqlConnection connection = new SqlConnection(DataAccessSettings.ConnectionString))
+                using (SqlConnection connection = new SqlConnection(clsAppConfigurations.ConnectionString))
                 {{
                     using (SqlCommand command = new SqlCommand(""{spName}"", connection))
                     {{
@@ -129,7 +129,7 @@ namespace {clsGlobal.DataBaseName}Data
 
             try
             {{
-                using (SqlConnection connection = new SqlConnection(DataAccessSettings.ConnectionString))
+                using (SqlConnection connection = new SqlConnection(clsAppConfigurations.ConnectionString))
                 {{
                     using (SqlCommand command = new SqlCommand(""{spName}"", connection))
                     {{
@@ -172,7 +172,7 @@ namespace {clsGlobal.DataBaseName}Data
 
             try
             {{
-                using (SqlConnection connection = new SqlConnection(DataAccessSettings.ConnectionString))
+                using (SqlConnection connection = new SqlConnection(clsAppConfigurations.ConnectionString))
                 {{
                     using (SqlCommand command = new SqlCommand(""{spName}"", connection))
                     {{
@@ -234,7 +234,7 @@ namespace {clsGlobal.DataBaseName}Data
 
             try
             {{
-                using (SqlConnection connection = new SqlConnection(DataAccessSettings.ConnectionString))
+                using (SqlConnection connection = new SqlConnection(clsAppConfigurations.ConnectionString))
                 {{
                     using (SqlCommand command = new SqlCommand(""{spName}"", connection))
                     {{
@@ -267,13 +267,13 @@ namespace {clsGlobal.DataBaseName}Data
             StringBuilder sb = new StringBuilder();
 
             sb.Append($@"
-        public static async Task<bool> Delete{clsGlobal.SingleTableName}Async({pkCol.ColumnDataType} {pkCol.ColumnName})
+        public static async Task<bool> Delete{clsGlobal.SingleTableName}({pkCol.ColumnDataType} {pkCol.ColumnName})
         {{
             int rowsAffected = 0;
 
             try
             {{
-                using (SqlConnection connection = new SqlConnection(DataAccessSettings.ConnectionString))
+                using (SqlConnection connection = new SqlConnection(clsAppConfigurations.ConnectionString))
                 {{
                     using (SqlCommand command = new SqlCommand(""{spName}"", connection))
                     {{
@@ -301,6 +301,9 @@ namespace {clsGlobal.DataBaseName}Data
             StringBuilder sb = new StringBuilder();
             foreach (var col in clsGlobal.Columns)
             {
+                if (col.IsPK)
+                    continue;
+
                 string defaultValue = col.ColumnDataType.ToLower() == "string" ? "\"\"" : $"default({col.ColumnDataType})";
                 sb.AppendLine($"                                {col.ColumnDataType} {col.ColumnName} = {defaultValue};");
             }
