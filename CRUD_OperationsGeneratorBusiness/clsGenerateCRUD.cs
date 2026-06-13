@@ -34,13 +34,9 @@ namespace {clsGlobal.DataBaseName}Data
     public static class cls{clsGlobal.TableName}Data
     {{
         {Read()} 
-
         {Create()}
-
         {Update()}
-
         {Delete()}
-
         {FindByID()}
     }}
 }}");
@@ -96,9 +92,7 @@ namespace {clsGlobal.DataBaseName}Data
                         {{
                             if (await reader.ReadAsync())
                             {{
-                                {_GenerateLocalVariablesDeclarations()}
-
-                                {clsUtility.HandleFindByIDData(clsGlobal.Columns)}
+                                 {clsUtility.HandleFindByID(clsGlobal.Columns)}
 
                                 dto = new {clsGlobal.SingleTableName}DTO({clsUtility.GetParameters(clsGlobal.Columns)});
                             }}
@@ -134,9 +128,6 @@ namespace {clsGlobal.DataBaseName}Data
                     using (SqlCommand command = new SqlCommand(""{spName}"", connection))
                     {{
                         command.CommandType = CommandType.StoredProcedure;
-
-                        {_GenerateLocalVariablesFromDto("dto")}
-
                         {clsUtility.CreateCommands(clsGlobal.Columns)}
 
                         await connection.OpenAsync();
@@ -239,9 +230,6 @@ namespace {clsGlobal.DataBaseName}Data
                     using (SqlCommand command = new SqlCommand(""{spName}"", connection))
                     {{
                         command.CommandType = CommandType.StoredProcedure;
-
-                        {_GenerateLocalVariablesFromDto("dto")}
-
                         {clsUtility.UpdateCommands(clsGlobal.Columns)}
 
                         await connection.OpenAsync();
@@ -309,16 +297,6 @@ namespace {clsGlobal.DataBaseName}Data
             }
             return sb.ToString();
         }
-
-        private static string _GenerateLocalVariablesFromDto(string dtoVarName)
-        {
-            StringBuilder sb = new StringBuilder();
-            foreach (var col in clsGlobal.Columns)
-            {
-                sb.AppendLine($"                        {col.ColumnDataType} {col.ColumnName} = {dtoVarName}.{col.ColumnName};");
-            }
-            return sb.ToString();
-        }
     }
     public class GenerateBusinessLayer
     {
@@ -329,7 +307,6 @@ namespace {clsGlobal.DataBaseName}Data
 
             sb.AppendLine($@"using System;
 using System.Collections.Generic;
-using System.Threading.Tasks;
 using {clsGlobal.DataBaseName}Data;
 
 namespace {clsGlobal.DataBaseName}Business
@@ -338,7 +315,6 @@ namespace {clsGlobal.DataBaseName}Business
     {{
         public enum enMode {{ AddNew = 0, Update = 1 }}
         public enMode Mode = enMode.AddNew;
-
         {_GenerateProperties()}
 
         public {clsGlobal.SingleTableName}DTO DTO
@@ -358,7 +334,7 @@ namespace {clsGlobal.DataBaseName}Business
             Mode = enMode.Update;
         }}
 
-        public static async Task<cls{clsGlobal.SingleTableName}> Find({pkCol.ColumnDataType} {pkCol.ColumnName})
+        public static async Task<cls{clsGlobal.SingleTableName}> FindAsync({pkCol.ColumnDataType} {pkCol.ColumnName})
         {{
             {clsGlobal.SingleTableName}DTO dto = await cls{clsGlobal.TableName}Data.Get{clsGlobal.SingleTableName}InfoByID({pkCol.ColumnName});
 

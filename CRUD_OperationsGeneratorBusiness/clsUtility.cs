@@ -18,38 +18,6 @@ namespace CRUD_OperationsGeneratorBusiness
 
             return sb.ToString();
         }
-        public static string GetParametersWithDataTypesOnly(List<clsColumn> Columns, string Prefix = "")
-        {
-            StringBuilder sb = new StringBuilder();
-
-            foreach (clsColumn column in Columns)
-            {
-                if (column.IsPK == true)
-                    continue;
-
-                sb.Append($"{Prefix}{column.ColumnDataType} {column.ColumnName},");
-            }
-
-            sb.Remove(sb.Length - 1, 1);
-
-            return sb.ToString();
-        }
-        public static string GetParametersWithoutDataTypesAndPK(List<clsColumn> Columns, string Prefix = "")
-        {
-            StringBuilder sb = new StringBuilder();
-
-            foreach (clsColumn column in Columns)
-            {
-                if (column.IsPK == true)
-                    continue;
-
-                sb.Append($"{Prefix}{column.ColumnName},");
-            }
-
-            sb.Remove(sb.Length - 1, 1);
-
-            return sb.ToString();
-        }
         public static string GetParameters(List<clsColumn> Columns, string Prefix = "")
         {
             StringBuilder sb = new StringBuilder();
@@ -63,7 +31,6 @@ namespace CRUD_OperationsGeneratorBusiness
 
             return sb.ToString();
         }
-
 
         public static string CreateCommands(List<clsColumn> columns)
         {
@@ -80,13 +47,13 @@ namespace CRUD_OperationsGeneratorBusiness
                         if({column.ColumnName} == """")
                         command.Parameters.AddWithValue(""@{column.ColumnName}"", DBNull.Value);
                         else
-                        command.Parameters.AddWithValue(""@{column.ColumnName}"",{column.ColumnName});");
+                        command.Parameters.AddWithValue(""@{column.ColumnName}"",dto.{column.ColumnName});");
 
                 }
                 else
                 {
                     sb.Append($@"
-                        command.Parameters.AddWithValue(""@{column.ColumnName}"",{column.ColumnName});");
+                        command.Parameters.AddWithValue(""@{column.ColumnName}"",dto.{column.ColumnName});");
                 }
 
             }
@@ -105,20 +72,19 @@ namespace CRUD_OperationsGeneratorBusiness
                         if({column.ColumnName} == """")
                         command.Parameters.AddWithValue(""@{column.ColumnName}"", DBNull.Value);
                         else
-                        command.Parameters.AddWithValue(""@{column.ColumnName}"",{column.ColumnName});");
+                        command.Parameters.AddWithValue(""@{column.ColumnName}"",dto.{column.ColumnName});");
                 }
                 else
                 {
                     sb.Append($@"
-                        command.Parameters.AddWithValue(""@{column.ColumnName}"",{column.ColumnName});");
+                        command.Parameters.AddWithValue(""@{column.ColumnName}"",dto.{column.ColumnName});");
                 }
 
             }
 
             return sb.ToString();
         }
-
-        public static string HandleFindByIDData(List<clsColumn> columns)
+        public static string HandleFindByID(List<clsColumn> columns)
         {
             StringBuilder sb = new StringBuilder();
 
@@ -130,34 +96,16 @@ namespace CRUD_OperationsGeneratorBusiness
                 {
                     sb.Append($@"
                        if (reader[""{column.ColumnName}""] == DBNull.Value) // Corrected Case
-                           {column.ColumnName} = """";
+                            string {column.ColumnName} = """";
                         else
-                           {column.ColumnName} = ({column.ColumnDataType})reader[""{column.ColumnName}""];");
+                            string{column.ColumnName} = ({column.ColumnDataType})reader[""{column.ColumnName}""];");
                 }
                 else
                 {
                     sb.Append($@"
-                       {column.ColumnName} = ({column.ColumnDataType})reader[""{column.ColumnName}""];");
+                            {column.ColumnDataType} {column.ColumnName} = ({column.ColumnDataType})reader[""{column.ColumnName}""];");
                 }
             }
-            return sb.ToString();
-        }
-
-        public static string UpdateQuery(List<clsColumn> Columns)
-        {
-            StringBuilder sb = new StringBuilder();
-
-            foreach (clsColumn column in Columns)
-            {
-                if (column.IsPK == true)
-                    continue;
-
-                sb.Append($@"[{column.ColumnName}] = @{column.ColumnName}
-                                       ,");
-            }
-
-            sb.Length -= 2;
-
             return sb.ToString();
         }
     }
