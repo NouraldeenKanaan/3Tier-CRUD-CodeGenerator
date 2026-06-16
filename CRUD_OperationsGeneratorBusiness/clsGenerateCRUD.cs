@@ -92,7 +92,7 @@ namespace {clsGlobal.DataBaseName}Data
                         {{
                             if (await reader.ReadAsync())
                             {{
-                                 {clsUtility.HandleFindByID(clsGlobal.Columns)}
+                                     {clsUtility.HandleFindByID(clsGlobal.Columns)}
 
                                 dto = new {clsGlobal.SingleTableName}DTO({clsUtility.GetParameters(clsGlobal.Columns)});
                             }}
@@ -131,7 +131,7 @@ namespace {clsGlobal.DataBaseName}Data
                         {clsUtility.CreateCommands(clsGlobal.Columns)}
 
                         await connection.OpenAsync();
-                        object result = await command.ExecuteScalarAsync();
+                        object result = command.ExecuteScalarAsync();
 
                         if (result != null && int.TryParse(result.ToString(), out int insertedID))
                         {{
